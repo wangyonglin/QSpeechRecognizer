@@ -7,4 +7,4 @@ git branch -u origin/master master
 git remote set-head origin -a
 
 ```
-### git remote add origin https://github.com/wangyonglin/QSpeechPlayerExamples.git
+### git remote add origin https://github.com/wangyonglin/QSpeechRecognizer.git
