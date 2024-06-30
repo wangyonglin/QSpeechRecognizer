@@ -1,5 +1,5 @@
-#ifndef QMICROPHONE_H
-#define QMICROPHONE_H
+#ifndef ASRMICROPHONE_H
+#define ASRMICROPHONE_H
 
 #include <QThread>
 #include <QDebug>
@@ -21,13 +21,16 @@
 #include <QObject>
 #include <QObject>
 
-class QMicrophone : public QObject
+#include "ASRSettings.h"
+
+class ASRMicrophone : public QObject
 {
     Q_OBJECT
 public:
-    explicit QMicrophone(QObject *parent = nullptr);
-    ~QMicrophone();
-    bool InitMicrophone(int sampleRate=16000, int channelCount=1, int sampleSize=16);
+    explicit ASRMicrophone(QObject *parent = nullptr);
+    ~ASRMicrophone();
+    bool InitMicrophone(ASRSettings *setting);
+
     QByteArray ReadAll();
     QAudioFormat format;
 
@@ -38,8 +41,10 @@ signals:
 private: /*   QT audio capture  */
     QAudioInput* audioInput;
     QIODevice *qIODevice;
-    QFile file; 			// 可以输出到文件，咱不用，直接播
+    int sampleRate;
+    int channelCount;
+    int sampleSize;
 
 };
 
-#endif // QMICROPHONE_H
+#endif // ASRMICROPHONE_H

@@ -19,7 +19,8 @@ INCLUDEPATH += $$SHERPA_NCNN_BOOT_PATH/build/_deps/ncnn-src/src
 INCLUDEPATH += $$SHERPA_NCNN_BOOT_PATH/build/_deps/ncnn-build/src/
 
 SOURCES +=  $$SHERPA_NCNN_BOOT_PATH/build/_deps/ncnn-src/src/mat.cpp \
-    $$PWD/QSpeechRecognizer.cpp
+    $$PWD/ASRSettings.cpp \
+    $$PWD/QASRPlayer.cpp
 SOURCES +=  $$SHERPA_NCNN_BOOT_PATH/build/_deps/ncnn-src/src/net.cpp
 
 LIBS +=  $$SHERPA_NCNN_BOOT_PATH/build/lib/libncnn.a
@@ -49,12 +50,13 @@ LIBS  += \
 
 
 HEADERS += \
-    $$PWD/QKeywordSpotter.h \
-    $$PWD/QMicrophone.h \
-    $$PWD/QRealtimeRecognizer.h \
-    $$PWD/QSpeaker.h \
-    $$PWD/QSpeechRecognizer.h \
-    $$PWD/QSpeechThreader.h \
+    $$PWD/ASRFrameName.h \
+    $$PWD/ASRFrameText.h \
+    $$PWD/ASRMicrophone.h \
+    $$PWD/ASRSettings.h \
+    $$PWD/ASRSpeaker.h \
+    $$PWD/ASRThreader.h \
+    $$PWD/QASRPlayer.h \
     $$PWD/QThreader.h \
     $$PWD/vendor/sherpa-onnx/build/_deps/kaldi_decoder-src/kaldi-decoder/csrc/decodable-ctc.h \
     $$PWD/vendor/sherpa-onnx/build/_deps/kaldi_decoder-src/kaldi-decoder/csrc/decodable-itf.h \
@@ -83,11 +85,11 @@ HEADERS += \
     $$PWD/vendor/sherpa-onnx/build/_deps/simple-sentencepiece-src/ssentencepiece/csrc/threadpool.h
 
 SOURCES += \
-    $$PWD/QKeywordSpotter.cpp \
-    $$PWD/QMicrophone.cpp \
-    $$PWD/QRealtimeRecognizer.cpp \
-    $$PWD/QSpeaker.cpp \
-    $$PWD/QSpeechThreader.cpp \
+    $$PWD/ASRFrameName.cpp \
+    $$PWD/ASRFrameText.cpp \
+    $$PWD/ASRMicrophone.cpp \
+    $$PWD/ASRSpeaker.cpp \
+    $$PWD/ASRThreader.cpp \
     $$PWD/QThreader.cpp \
     $$PWD/vendor/sherpa-onnx/build/_deps/kaldi_decoder-src/kaldi-decoder/csrc/decodable-ctc.cc \
     # $$PWD/vendor/sherpa-onnx/build/_deps/kaldi_decoder-src/kaldi-decoder/csrc/eigen-test.cc \

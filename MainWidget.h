@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QPainter>
-#include "QSpeechRecognizer/QSpeechRecognizer.h"
-
+#include <QASRPlayer>
+#include "KylinSettings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,6 +22,7 @@ public:
 
 private:
     Ui::MainWidget *ui;
-    QSpeechRecognizer *qSpeechRecognizer;
+    QASRPlayer *qASRPlayer;
+
 };
 #endif // MAINWIDGET_H

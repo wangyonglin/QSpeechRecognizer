@@ -1,21 +1,19 @@
-#include "QKeywordSpotter.h"
+#include "ASRFrameName.h"
 
-QKeywordSpotter::QKeywordSpotter(QObject *parent)
+ASRFrameName::ASRFrameName(QObject *parent)
     : QObject{parent}
 {}
 
-bool QKeywordSpotter::InitKeywordSpotter(int32_t num_threads ,QString method)
+bool ASRFrameName::InitRecognizer(ASRSettings *setting)
 {
-    Q_UNUSED(num_threads);Q_UNUSED(method);
-    display =std::make_unique<sherpa_onnx::Display>(50);
-    sherpa_onnx::KeywordSpotterConfig config= createKeywordSpotter();
-    expected_sampling_rate=16000;
+    sherpa_onnx::KeywordSpotterConfig config= createKeywordSpotter(setting);
+    expected_sampling_rate=setting->sherpa_onnx_sampling_rate;
     kws= std::make_unique<sherpa_onnx::KeywordSpotter>(config);
     kws_stream=kws->CreateStream();
     return true;
 }
 
-void QKeywordSpotter::BuildRecognizer(QByteArray & bytes)
+void ASRFrameName::BuildRecognizer(QByteArray & bytes)
 {
     if(bytes.isEmpty())return;
     // 确保data的大小是4的倍数
@@ -38,7 +36,7 @@ void QKeywordSpotter::BuildRecognizer(QByteArray & bytes)
         kws_stream->AcceptWaveform(expected_sampling_rate, floatVector.data(),floatVector.size());
         // std::vector<float> tail_paddings(static_cast<int>(0.3 * expected_sampling_rate));  // 0.3 seconds at 16 kHz sample rate
         //  stream->AcceptWaveform(expected_sampling_rate, tail_paddings.data(),tail_paddings.size());
-     //   kws_stream->InputFinished();
+        //   kws_stream->InputFinished();
         while (kws->IsReady(kws_stream.get())) {
             kws->DecodeStream(kws_stream.get());
         }
@@ -49,27 +47,27 @@ void QKeywordSpotter::BuildRecognizer(QByteArray & bytes)
         }
     }
 
-
-
 }
-sherpa_onnx::KeywordSpotterConfig QKeywordSpotter:: createKeywordSpotter() {
-    std::string keyword_spotter_path="/home/wangyonglin/QTestExamples/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01";
+sherpa_onnx::KeywordSpotterConfig ASRFrameName:: createKeywordSpotter(ASRSettings *setting)
+{
     sherpa_onnx::FeatureExtractorConfig feat_config;
-    feat_config.sampling_rate=16000;
-    feat_config.feature_dim=80;
+    feat_config.sampling_rate=setting->sherpa_onnx_sampling_rate;
+    feat_config.feature_dim=setting->sherpa_onnx_feature_dim;
     sherpa_onnx::OnlineModelConfig model_config;
-    model_config.transducer.encoder=keyword_spotter_path+"/encoder-epoch-12-avg-2-chunk-16-left-64.onnx";
-    model_config.transducer.decoder=keyword_spotter_path+"/decoder-epoch-12-avg-2-chunk-16-left-64.onnx";
-    model_config.transducer.joiner=keyword_spotter_path+"/joiner-epoch-12-avg-2-chunk-16-left-64.onnx";
-    model_config.tokens=keyword_spotter_path+"/tokens.txt";
-    model_config.num_threads=4;
-    model_config.provider="cpu";
-    model_config.debug=1;
+    model_config.transducer.encoder=setting->sherpa_onnx_encoder.toStdString();
+    model_config.transducer.decoder=setting->sherpa_onnx_decoder.toStdString();
+    model_config.transducer.joiner=setting->sherpa_onnx_joiner.toStdString();
+    model_config.tokens=setting->sherpa_onnx_tokens.toStdString();
+    model_config.num_threads=setting->sherpa_onnx_num_threads;
+    model_config.provider=setting->sherpa_onnx_provider.toStdString();
+    model_config.debug=setting->sherpa_onnx_debug;
+
     int32_t max_active_paths = 4;
     int32_t num_trailing_blanks = 1;
     float keywords_score = 1.0;
     float keywords_threshold = 0.25;
-    const std::string &keywords_file=keyword_spotter_path+"/keywords.txt";
+    const std::string &keywords_file=setting->sherpa_onnx_keywords.toStdString();
+    qDebug() << setting->sherpa_onnx_keywords;
     sherpa_onnx::KeywordSpotterConfig config(feat_config,
                                              model_config,
                                              max_active_paths,

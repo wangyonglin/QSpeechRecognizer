@@ -13,12 +13,15 @@ include($$PWD/QSpeechRecognizer/QSpeechRecognizer.pri)
 
 
 SOURCES += \
+    KylinSettings.cpp \
     main.cpp \
     MainWidget.cpp
 
 
 HEADERS += \
-     MainWidget.h
+     KylinSettings.h \
+     MainWidget.h \
+     QASRPlayer
 
 
 
@@ -31,7 +34,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    README.md
+    README.md \
+    conf/kylin.conf
 
 
 

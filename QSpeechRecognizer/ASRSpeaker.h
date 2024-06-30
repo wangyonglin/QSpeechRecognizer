@@ -1,5 +1,5 @@
-#ifndef QSPEAKER_H
-#define QSPEAKER_H
+#ifndef ASRSPEAKER_H
+#define ASRSPEAKER_H
 #include <QThread>
 #include <QDebug>
 #include <QTimer>
@@ -19,14 +19,15 @@
 #include <QDataStream>
 #include <QObject>
 #include <QObject>
+#include "ASRSettings.h"
 
-class QSpeaker : public QObject
+class ASRSpeaker : public QObject
 {
     Q_OBJECT
 public:
-    explicit QSpeaker(QObject *parent = nullptr);
+    explicit ASRSpeaker(QObject *parent = nullptr);
 
-    bool InitSpeaker(int sampleRate=16000,int channelCount=1,int sampleSize=16);
+    bool InitSpeaker(ASRSettings *setting);
     qint64 PlaySpeaker(QByteArray &bytes);
 
 private:
@@ -35,6 +36,9 @@ private:
     QIODevice *audioIO;
     QTimer *audioPlayTimer;
     QThread *timerTHread;
+    // int sampleRate=16000;
+    // int channelCount=1;
+    // int sampleSize=16;
 };
 
-#endif // QSPEAKER_H
+#endif // ASRSPEAKER_H

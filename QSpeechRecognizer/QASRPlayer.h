@@ -1,33 +1,36 @@
-#ifndef QSPEECHRECOGNIZER_H
-#define QSPEECHRECOGNIZER_H
+#ifndef QASRPLAYER_H
+#define QASRPLAYER_H
 
 #include <QLabel>
 #include <QWidget>
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QPainterPath>
-#include "QSpeechRecognizer/QSpeechThreader.h"
+#include <QSettings>
+#include "QSpeechRecognizer/ASRThreader.h"
+#include "KylinSettings.h"
+#include "ASRSettings.h"
 
+
+class QSettings;
 class QHBoxLayout;
 class QLabel;
 class QTimer;
-class QSpeechRecognizer : public QWidget
+class QASRPlayer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QSpeechRecognizer(QWidget *parent = nullptr);
-    ~QSpeechRecognizer();
+    explicit QASRPlayer(QWidget *parent = nullptr);
 
-
-
+    ~QASRPlayer();
 private:
+    ASRSettings *setting;
     int strokeWidth;
     QColor strokeColor;
     int     textSize;//显示字体大小
     QColor  textColor;//字体颜色
-
-    QSpeechThreader *qSpeechThreader;
-    QString str;
+    ASRThreader *asrThreader;
+    QString str="";
     QTimer timer;
     QString GetTextByWidth(const QFontMetrics &fm, const QString &text, int width);
     QStringList GetTextLinesByRectSize(const QFontMetrics &fm, const QString &text, const QSize &size);
@@ -40,4 +43,4 @@ private slots:
     void showTextLabel();
 };
 
-#endif // QSPEECHRECOGNIZER_H
+#endif // QASRPLAYER_H

@@ -1,21 +1,24 @@
-#include "QMicrophone.h"
+#include "ASRMicrophone.h"
 
-QMicrophone::QMicrophone(QObject *parent)
-    : QObject{parent}
+ASRMicrophone::ASRMicrophone(QObject *parent)
+    : QObject{parent},
+    sampleRate(16000),
+    channelCount(1),
+    sampleSize(16)
 {
 
 }
 
-QMicrophone::~QMicrophone()
+ASRMicrophone::~ASRMicrophone()
 {
 
 }
 
-bool QMicrophone::InitMicrophone(int sampleRate,int channelCount,int sampleSize){
+bool ASRMicrophone::InitMicrophone(ASRSettings *setting){
     qIODevice = nullptr;
-    format.setSampleRate(sampleRate);
-    format.setChannelCount(channelCount);      // 设定声道数目，mono(平声道)的声道数目是1；stero(立体声)的声道数目是2
-    format.setSampleSize(sampleSize);       // 采样位深
+    format.setSampleRate(setting->asr_sample_rate);
+    format.setChannelCount(setting->asr_channel_count);      // 设定声道数目，mono(平声道)的声道数目是1；stero(立体声)的声道数目是2
+    format.setSampleSize(setting->asr_sample_size);       // 采样位深
     format.setCodec("audio/pcm");   // 设置唯一支持的codec
     format.setByteOrder(QAudioFormat::LittleEndian);
     format.setSampleType(QAudioFormat::SignedInt);
@@ -37,7 +40,7 @@ bool QMicrophone::InitMicrophone(int sampleRate,int channelCount,int sampleSize)
     return false;
 }
 
-QByteArray QMicrophone::ReadAll(){
+QByteArray ASRMicrophone::ReadAll(){
     if(qIODevice){
         return qIODevice->readAll();
     }

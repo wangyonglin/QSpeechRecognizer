@@ -1,49 +1,49 @@
-#include "QSpeechRecognizer.h"
+#include "QASRPlayer.h"
 
-QSpeechRecognizer::QSpeechRecognizer(QWidget *parent)
+QASRPlayer::QASRPlayer(QWidget *parent)
     : QWidget{parent},
+    setting(new ASRSettings(parent)),
     textSize(40),
     textColor(QColor(250,000,000)),
     strokeWidth(16),
     strokeColor(QColor(000,000,000)),
-    qSpeechThreader(new QSpeechThreader(this))
+    asrThreader(new ASRThreader(this))
 {
-    qSpeechThreader->InitVoiceAssistant(size());
-    qSpeechThreader->SetKeywordSpotter(true);
-    qSpeechThreader->SetPlaySpeaker(true);
-
-    connect(qSpeechThreader,&QSpeechThreader::updateRecognizer,[=](){
+    asrThreader->InitThreader(setting);
+    connect(asrThreader,&ASRThreader::updateRecognizer,[=](){
         showTextLabel();
-        if(!qSpeechThreader->listText.isEmpty()){
-            if(qSpeechThreader->listText.size()>20)return;
+        if(!asrThreader->listText.isEmpty()){
+            if(asrThreader->listText.size()>20)return;
             str.clear();
-            str = QStringList(qSpeechThreader->listText.toList()).join(",");
+            str = QStringList(asrThreader->listText.toList()).join("");
             update();
         }
     });
 
-    connect(qSpeechThreader,&QSpeechThreader::finishRecognizer,[=](){
-        QTimer::singleShot(10,this,&QSpeechRecognizer::hideTextLabel);
+    connect(asrThreader,&ASRThreader::finishRecognizer,[=](){
+        QTimer::singleShot(10,this,&QASRPlayer::hideTextLabel);
         if(!str.isEmpty()){
             str.clear();
         }
-        if(!qSpeechThreader->listText.isEmpty()){
-            qSpeechThreader->listText.clear();
+        if(!asrThreader->listText.isEmpty()){
+            asrThreader->listText.clear();
         }
         update();
     });
 
-    qSpeechThreader->loopStart();
+    asrThreader->loopStart();
 }
 
-QSpeechRecognizer::~QSpeechRecognizer()
+
+
+QASRPlayer::~QASRPlayer()
 {
-    qSpeechThreader->loopStop();
+    asrThreader->loopStop();
 }
 
 
 
-void QSpeechRecognizer::paintEvent(QPaintEvent *event)
+void QASRPlayer::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     if(str.isEmpty())return;
@@ -59,11 +59,11 @@ void QSpeechRecognizer::paintEvent(QPaintEvent *event)
     painter.setPen(fontColor);
     return PaintStrokeText(&painter,rect(),str,font,strokeWidth,strokeColor,QTextOption(Qt::AlignCenter));
 }
-void QSpeechRecognizer::hideTextLabel()
+void QASRPlayer::hideTextLabel()
 {
     hide();
 }
-void QSpeechRecognizer::showTextLabel()
+void QASRPlayer::showTextLabel()
 {
     show();
 }
@@ -75,7 +75,7 @@ void QSpeechRecognizer::showTextLabel()
 /// \param width
 /// \return
 ///
-QString QSpeechRecognizer::GetTextByWidth(const QFontMetrics& fm, const QString& text, int width)
+QString QASRPlayer::GetTextByWidth(const QFontMetrics& fm, const QString& text, int width)
 {
     if(width <= 0)
         return QString();
@@ -97,7 +97,7 @@ QString QSpeechRecognizer::GetTextByWidth(const QFontMetrics& fm, const QString&
 /// \param size
 /// \return
 ///
-QStringList QSpeechRecognizer::GetTextLinesByRectSize(const QFontMetrics& fm, const QString& text, const QSize& size)
+QStringList QASRPlayer::GetTextLinesByRectSize(const QFontMetrics& fm, const QString& text, const QSize& size)
 {
     QStringList splitLines = text.split('\n');
     QStringList result;
@@ -138,7 +138,7 @@ QStringList QSpeechRecognizer::GetTextLinesByRectSize(const QFontMetrics& fm, co
 /// \param strokeColor 艺术字发光颜色
 /// \param option 对齐方式
 ///
-void QSpeechRecognizer::PaintStrokeText(QPainter* painter,
+void QASRPlayer::PaintStrokeText(QPainter* painter,
                      const QRect& rect,
                      const QString& text,
                      const QFont& font,
@@ -216,3 +216,4 @@ void QSpeechRecognizer::PaintStrokeText(QPainter* painter,
    // painter->drawText(rect, text, option);
     painter->restore();
 }
+

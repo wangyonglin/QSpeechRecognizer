@@ -13,16 +13,14 @@
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWidget),
-    qSpeechRecognizer(new QSpeechRecognizer(parent))
+    qASRPlayer(new QASRPlayer(parent))
 
 {
+
     ui->setupUi(this);
-
     QVBoxLayout* vLay = new QVBoxLayout(this);
-    vLay->addWidget(qSpeechRecognizer);
-
+    vLay->addWidget(qASRPlayer);
     setLayout(vLay);//设置垂直布局
-
 
 }
 MainWidget::~MainWidget()
